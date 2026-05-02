@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Undangan Digital Premium - Reka&Jeje</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: #000; overflow-x: hidden; width: 100%; }
+
+        /* --- LAYER 1: COVER --- */
+        #cover-undangan {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+            background-color: #000; transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        .video-cover { width: 100%; height: 100vh; object-fit: cover; }
+        .overlay-cover {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; pointer-events: none;
+        }
+        .tamu-box { margin-top: 75%; width: 85%; text-align: center; }
+        #nama-tamu-display { font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: #4a1a1a; font-weight: bold; }
+        .btn-buka {
+            margin-top: 15%; padding: 12px 45px; background-color: #b8962e; 
+            color: white; border: none; border-radius: 50px; cursor: pointer; 
+            font-weight: 600; pointer-events: auto;
+        }
+
+        /* --- LAYER 2: KONTEN UTAMA --- */
+        #konten-utama { display: none; width: 100%; max-width: 500px; margin: 0 auto; background: white; }
+        .wrapper-video { position: relative; width: 100%; line-height: 0; overflow: hidden; }
+        .video-isi { width: 100%; display: block; height: auto; }
+
+        /* --- COUNTDOWN (VIDEO 5) --- */
+        .countdown-container {
+            position: absolute; top: 74%; left: 50%; transform: translateX(-50%);
+            width: 90%; display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 8px; justify-items: center; pointer-events: none;
+        }
+        .countdown-item {
+            background: rgba(255, 255, 255, 0.95); width: 100%; max-width: 60px;
+            aspect-ratio: 1 / 1; border-radius: 10px; display: flex;
+            flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .countdown-item span { font-size: 1.2rem; font-weight: 800; color: #4a1a1a; line-height: 1; }
+        .countdown-item label { font-size: 0.6rem; font-weight: 600; text-transform: uppercase; margin-top: 4px; color: #4a1a1a; }
+
+        /* --- TOMBOL SALIN (VIDEO 6) --- */
+        .gift-container {
+            position: absolute; top: 30%; left: 0; width: 100%; height: 65%;
+            display: flex; flex-direction: column; align-items: center; gap: 6.5%;
+            pointer-events: none;
+        }
+        .btn-copy-box { width: 60%; pointer-events: auto; }
+        .btn-copy {
+            width: 100%; padding: 10px 0; background-color: #f9f9f9;
+            border: 2px solid #000; color: #000; font-size: 0.75rem;
+            font-weight: 800; cursor: pointer; border-radius: 4px;
+        }
+
+        /* --- OVERLAY BUKU TAMU (VIDEO 7) --- */
+        .rsvp-overlay {
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            width: 85%; 
+            background: rgba(255, 255, 255, 0.85);
+            padding: 25px; 
+            border-radius: 15px; 
+            text-align: center;
+            border: 1.5px solid #b8962e; 
+            pointer-events: auto;
+            z-index: 10;
+            line-height: normal; /* Mengembalikan line height agar teks tidak gepeng */
+        }
+        .btn-rsvp-wa {
+            display: inline-block; 
+            margin-top: 15px; 
+            background-color: #25D366;
+            color: white; 
+            text-decoration: none; 
+            padding: 12px 20px;
+            border-radius: 8px; 
+            font-weight: bold; 
+            font-size: 0.85rem;
+        }
+
+        .btn-lokasi-video5 {
+            position: absolute; top: 60%; left: 50%; transform: translateX(-50%);
+            padding: 10px 25px; background-color: #b8962e; color: white; 
+            border: none; border-radius: 30px; font-weight: 600; font-size: 0.8rem; 
+            cursor: pointer; z-index: 20; pointer-events: auto;
+        }
+
+        #btn-musik {
+            position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+            background: rgba(184, 150, 46, 0.8); width: 45px; height: 45px; 
+            border-radius: 50%; display: none; align-items: center; 
+            justify-content: center; color: white; cursor: pointer;
+        }
+        .slide-up { transform: translateY(-100%); }
+    </style>
+</head>
+<body>
+
+    <audio id="audioUndangan" loop><source src="musik.mp3" type="audio/mpeg"></audio>
+    <div id="btn-musik" onclick="toggleMusik()">🎵</div>
+
+    <div id="cover-undangan">
+        <video autoplay loop muted playsinline class="video-cover"><source src="video1.mp4" type="video/mp4"></video>
+        <div class="overlay-cover">
+            <div class="tamu-box"><div id="nama-tamu-display">Tamu Undangan</div></div>
+            <button class="btn-buka" onclick="bukaUndangan()">BUKA UNDANGAN</button>
+        </div>
+    </div>
+
+    <div id="konten-utama">
+        <video id="vid2" loop muted playsinline class="video-isi"><source src="video2.mp4" type="video/mp4"></video>
+        <video id="vid3" loop muted playsinline class="video-isi"><source src="video3.mp4" type="video/mp4"></video>
+        <video id="vid4" loop muted playsinline class="video-isi"><source src="video4.mp4" type="video/mp4"></video>
+
+        <div class="wrapper-video">
+            <video id="vid5" loop muted playsinline class="video-isi"><source src="video5.mp4" type="video/mp4"></video>
+            <button class="btn-lokasi-video5" onclick="window.open('https://maps.app.goo.gl/wquPQ6jX1dq7mfAS6')">PETUNJUK LOKASI (MAPS)</button>
+            <div class="countdown-container">
+                <div class="countdown-item"><span id="days">00</span><label>Hari</label></div>
+                <div class="countdown-item"><span id="hours">00</span><label>Jam</label></div>
+                <div class="countdown-item"><span id="minutes">00</span><label>Menit</label></div>
+                <div class="countdown-item"><span id="seconds">00</span><label>Detik</label></div>
+            </div>
+        </div>
+
+        <div class="wrapper-video">
+            <video id="vid6" loop muted playsinline class="video-isi"><source src="video6.mp4" type="video/mp4"></video>
+            <div class="gift-container">
+                <div style="height: 5%;"></div>
+                <div class="btn-copy-box"><button class="btn-copy" onclick="salinTeks('0140113387100', 'BJB')">Salin No Rekening</button></div>
+                <div class="btn-copy-box" style="margin-top: 2.5%;"><button class="btn-copy" onclick="salinTeks('1630010485384', 'Mandiri')">Salin No Rekening</button></div>
+                <div class="btn-copy-box" style="margin-top: 6%;"><button class="btn-copy" onclick="salinTeks('085888378392', 'Gopay')">Salin Nomor</button></div>
+            </div>
+        </div>
+
+        <!-- VIDEO 7 SEBAGAI LATAR BUKU TAMU -->
+        <div class="wrapper-video">
+            <video id="vid7" loop muted playsinline class="video-isi"><source src="video7.mp4" type="video/mp4"></video>
+            <div class="rsvp-overlay">
+                <h2 style="font-family: 'Dancing Script', cursive; color: #4a1a1a; margin-bottom: 5px;">Buku Tamu</h2>
+                <p style="font-size: 0.75rem; color: #333;">Mohon konfirmasi kehadiran & kirim doa restu melalui WhatsApp kami</p>
+                <!-- Link WA Otomatis -->
+<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+    <!-- Tombol untuk Pria -->
+    <a href="https://wa.me/6285888378392?text=Halo!%20Saya%20ingin%20mengonfirmasi%20kehadiran%20dan%20mengirimkan%20doa%20untuk%20pernikahan" 
+       style="display: inline-block; padding: 8px 15px; background-color: #25d366; color: white; text-decoration: none; border-radius: 20px; font-size: 0.8rem;">
+       Konfirmasi ke Pria
+    </a>
+
+    <!-- Tombol untuk Wanita (Nomor yang sudah ada sebelumnya) -->
+    <a href="https://wa.me/6285718674787?text=Halo!%20Saya%20ingin%20mengonfirmasi%20kehadiran%20dan%20mengirimkan%20doa%20untuk%20pernikahan" 
+       style="display: inline-block; padding: 8px 15px; background-color: #25d366; color: white; text-decoration: none; border-radius: 20px; font-size: 0.8rem;">
+       Konfirmasi ke Wanita
+    </a>
+</div>
+ 	
+        </div>
+
+        <video id="vid8" loop muted playsinline class="video-isi"><source src="video8.mp4" type="video/mp4"></video>
+        <div style="height: 50px; background: white;"></div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const namaLink = urlParams.get('to');
+        const displayNama = document.getElementById("nama-tamu-display");
+        const musik = document.getElementById("audioUndangan");
+        const tanggalAcara = new Date(2026, 5, 2, 9, 0, 0).getTime();
+
+        window.onload = () => {
+            if (namaLink) { displayNama.innerText = namaLink.replace(/[+]/g, ' '); }
+            mulaiCountdown();
+        };
+
+        function salinTeks(isi, label) {
+            navigator.clipboard.writeText(isi).then(() => {
+                alert(label + " berhasil disalin!");
+            });
+        }
+
+        function mulaiCountdown() {
+            setInterval(function() {
+                const sekarang = new Date().getTime();
+                const selisih = tanggalAcara - sekarang;
+                if (selisih > 0) {
+                    document.getElementById("days").innerText = Math.floor(selisih / (1000 * 60 * 60 * 24));
+                    document.getElementById("hours").innerText = Math.floor((selisih % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    document.getElementById("minutes").innerText = Math.floor((selisih % (1000 * 60 * 60)) / (1000 * 60));
+                    document.getElementById("seconds").innerText = Math.floor((selisih % (1000 * 60)) / 1000);
+                }
+            }, 1000);
+        }
+
+        function bukaUndangan() {
+            musik.play();
+            document.getElementById("btn-musik").style.display = "flex";
+            document.getElementById("konten-utama").style.display = "block";
+            // Memastikan semua video diputar saat tombol buka ditekan
+            for(let i=2; i<=8; i++) { 
+                let v = document.getElementById("vid"+i); 
+                if(v) v.play(); 
+            }
+            document.getElementById("cover-undangan").classList.add("slide-up");
+            setTimeout(() => { 
+                document.getElementById("cover-undangan").style.display = "none"; 
+                window.scrollTo(0, 0); 
+            }, 1200);
+        }
+
+        function toggleMusik() {
+            if (musik.paused) { musik.play(); document.getElementById("btn-musik").innerText = "🎵"; }
+            else { musik.pause(); document.getElementById("btn-musik").innerText = "🔇"; }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Link Undangan</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; text-align: center; }
+        .card { background: white; padding: 20px; border-radius: 10px; max-width: 400px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { width: 100%; padding: 10px; background: #25d366; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        #hasil { margin-top: 20px; padding: 10px; background: #e9e9e9; word-break: break-all; font-size: 0.9rem; display: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Generate Link Undangan</h2>
+        <input type="text" id="nama1" placeholder="Nama Tamu (Contoh: Fajar)">
+        <input type="text" id="nama2" placeholder="Nama Pasangan (Kosongkan jika tidak ada)">
+        <button onclick="buatLink()">Generate & Kirim WA</button>
+        <div id="hasil"></div>
+    </div>
+
+    <script>
+        function buatLink() {
+            const n1 = document.getElementById('nama1').value.trim();
+            const n2 = document.getElementById('nama2').value.trim();
+            const baseLink = "https://username.github.io/undangan-digital/"; // GANTI DENGAN LINK GITHUB ANDA
+
+            if(!n1) return alert("Nama tamu harus diisi!");
+
+            // Logika otomatis "Pasangan"
+            let namaGabung = n1;
+            if(n2) {
+                namaGabung += " & " + n2;
+            } else {
+                namaGabung += " & Pasangan";
+            }
+
+            const linkFinal = baseLink + "?to=" + encodeURIComponent(namaGabung);
+            
+            // Tampilkan link
+            document.getElementById('hasil').style.display = "block";
+            document.getElementById('hasil').innerHTML = "<strong>Link Berhasil Dibuat:</strong><br>" + linkFinal;
+
+            // Buka WhatsApp Otomatis
+            const pesanWA = "Halo " + namaGabung + ", kami mengundang Anda ke acara pernikahan kami. Buka undangan di sini: " + linkFinal;
+            window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(pesanWA));
+        }
+    </script>
+</body>
+</html>
